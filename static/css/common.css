@@ -1,0 +1,237 @@
+/* common.css - шрифты, переменные, хедер, карточки, кнопки, утилиты */
+@font-face {
+    font-family: 'Bounded';
+    src: url('/static/fonts/Bounded-Regular.woff2') format('woff2');
+    font-weight: 400;
+}
+@font-face {
+    font-family: 'Manrope';
+    src: url('/static/fonts/Manrope-Regular.woff2') format('woff2');
+    font-weight: 400;
+}
+@font-face {
+    font-family: 'Manrope';
+    src: url('/static/fonts/Manrope-Bold.woff2') format('woff2');
+    font-weight: 700;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Manrope', sans-serif;
+    background: rgb(171, 159, 163);
+    min-height: 100vh;
+    color: white;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 20px 60px;
+}
+/* ---------- ХЕДЕР ---------- */
+.main-header {
+    position: sticky;
+    top: 10px;
+    z-index: 150;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px; /* отступ снизу */
+}
+.header-inner {
+    width: calc(100% - 40px);
+    max-width: 1280px;
+    background: rgba(255, 228, 238, 0.8);
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 0 30px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.logo a {
+    font-family: 'Bounded', sans-serif;
+    font-size: 18px;
+    color: #D66584;
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+.nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+}
+.nav-links a {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    color: #404040;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.nav-links a:hover {
+    color: #D66584;
+}
+.logout-link {
+    background: #D66584;
+    padding: 8px 16px;
+    border-radius: 5px;
+    color: white !important;
+}
+.logout-link:hover {
+    background: #BA5470;
+}
+.burger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.burger svg {
+    width: 28px;
+    stroke: #D66584;
+}
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 228, 238, 0.95);
+    backdrop-filter: blur(20px);
+    z-index: 200;
+    flex-direction: column;
+    padding: 60px 30px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+.mobile-menu.active {
+    transform: translateX(0);
+    display: flex;
+}
+.mobile-menu a {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    color: #404040;
+    text-decoration: none;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+.close-menu {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    color: #D66584;
+}
+/* ---------- ЗАГОЛОВКИ СТРАНИЦ ---------- */
+.header h1 {
+    font-family: 'Bounded', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    text-align: center;
+    color: white;
+    margin-bottom: 8px;
+}
+.header .subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 30px;
+}
+/* ---------- КАРТОЧКИ ---------- */
+.auth-card, .upload-card, .camera-card, .preview-card, .chart-container, .timeline, .stats, .dashboard-header, .stat-card, .recent-scans {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+.upload-card, .camera-card, .preview-card, .chart-container, .timeline {
+    padding: 40px;
+}
+/* Центрирование upload-card */
+.upload-card {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+.stats, .dashboard-header, .stat-card, .recent-scans {
+    padding: 25px;
+}
+/* ---------- КНОПКИ ---------- */
+button, .login-btn, .register-btn, .analyze-btn, .action-btn, .mode-btn, .new-btn, .save-btn, .back-btn, .tab-btn {
+    background: #D66584;
+    border: none;
+    border-radius: 5px;
+    font-family: 'Bounded', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: white;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.analyze-btn{
+    margin-top: 30px;
+}
+button:hover, .login-btn:hover, .register-btn:hover, .analyze-btn:hover, .action-btn:hover, .new-btn:hover, .save-btn:hover {
+    background: #BA5470;
+    transform: translateY(-2px);
+}
+.mode-btn {
+    background: rgba(255,255,255,0.2);
+    text-decoration: none;
+    display: inline-block;
+}
+.mode-btn.active {
+    background: #D66584;
+}
+.back-btn, .logout-btn {
+    background: rgba(239,68,68,0.8);
+}
+.back-btn:hover, .logout-btn:hover {
+    background: #ef4444;
+}
+/* ---------- ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМОВ ---------- */
+.mode-switch {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+/* ---------- ПРОГРЕСС-БАР ---------- */
+.progress {
+    background: rgba(0,0,0,0.3);
+    height: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+#wrinkleBar {
+    height: 100%;
+    background: linear-gradient(90deg, #D66584, #F0A0B8);
+    width: 0%;
+    transition: width 1s ease-out;
+    border-radius: 15px;
+}
+/* ---------- УТИЛИТЫ ---------- */
+.hidden {
+    display: none !important;
+}
+/* ---------- АДАПТИВ ---------- */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .burger { display: block; }
+    .header-inner { height: 56px; padding: 0 20px; }
+    .container { padding: 20px 15px 40px; }
+    .upload-card, .camera-card, .preview-card, .chart-container, .timeline { padding: 25px; }
+    .mode-switch { flex-direction: column; align-items: center; gap: 10px; }
+}
