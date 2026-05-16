@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>История анализов - AI Анализ кожи</title>
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/history.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="main-header">
+    <div class="header-inner">
+        <div class="logo"><a href="/">AI Анализ кожи</a></div>
+        <div class="nav-links">
+            <a href="/">Главная</a>
+            <a href="/camera">С камеры</a>
+            <a href="/history">История</a>
+            <a href="/dashboard">Дашборд</a>
+            <a href="/logout" class="logout-link">Выйти</a>
+        </div>
+        <button class="burger" id="burgerBtn">
+            <svg viewBox="0 0 30 23" fill="none">
+                <line x1="1.5" y1="1.5" x2="28.5" y2="1.5" stroke="#D66584" stroke-width="3" stroke-linecap="round"/>
+                <line x1="1.5" y1="11.5" x2="28.5" y2="11.5" stroke="#D66584" stroke-width="3" stroke-linecap="round"/>
+                <line x1="1.5" y1="21.5" x2="28.5" y2="21.5" stroke="#D66584" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+        </button>
+    </div>
+</div>
+<div class="mobile-menu" id="mobileMenu">
+    <button class="close-menu" id="closeMenuBtn">&times;</button>
+    <a href="/">Главная</a>
+    <a href="/camera">С камеры</a>
+    <a href="/history">История</a>
+    <a href="/dashboard">Дашборд</a>
+    <a href="/logout">Выйти</a>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>История анализов</h1>
+        <p class="subtitle">Отслеживайте изменения состояния кожи</p>
+    </div>
+
+    <div class="history-header">
+        <a href="/dashboard" class="mode-btn back-btn-small">Назад</a>
+    </div>
+
+    <!-- Секция для детального просмотра скана -->
+    <div id="scanDetail" style="display: none;">
+        <div class="chart-container">
+            <h3>Детальный анализ от <span id="scanDate"></span></h3>
+            <div class="comparison-images">
+                <div class="comparison-img">
+                    <p>Оригинальное фото</p>
+                    <img id="detailOriginal" style="width: 100%; border-radius: 15px; cursor: pointer;" onclick="openImage(this.src)">
+                </div>
+                <div class="comparison-img">
+                    <p>Результат анализа</p>
+                    <img id="detailResult" style="width: 100%; border-radius: 15px; cursor: pointer;" onclick="openImage(this.src)">
+                </div>
+            </div>
+            <div class="stats" style="margin-top: 20px;">
+                <p><strong>Уровень морщин:</strong> <span id="detailPercent"></span>%</p>
+                <p><strong>Количество морщин:</strong> <span id="detailCount"></span></p>
+                <p><strong>Качество освещения:</strong> <span id="detailLighting"></span>%</p>
+            </div>
+        </div>
+
+        <div class="chart-container" id="wrinklesDetailContainer" style="display: none;">
+            <h3>Детальный анализ каждой морщины</h3>
+            <div class="severity-summary" style="display: flex; gap: 15px; margin: 15px 0;">
+                <div class="severity-badge minor" data-filter="minor">
+                    <span>Слабые</span>
+                    <strong id="minorCount" style="display: block; font-size: 24px;">0</strong>
+                </div>
+                <div class="severity-badge moderate" data-filter="moderate">
+                    <span>Средние</span>
+                    <strong id="moderateCount" style="display: block; font-size: 24px;">0</strong>
+                </div>
+                <div class="severity-badge severe" data-filter="severe">
+                    <span>Сильные</span>
+                    <strong id="severeCount" style="display: block; font-size: 24px;">0</strong>
+                </div>
+            </div>
+            <div class="zone-stats" id="zoneStats"></div>
+            <div style="margin: 15px 0;">
+                <button class="tab-btn active" onclick="filterWrinkles('all')">Все морщины</button>
+                <button class="tab-btn" onclick="filterWrinkles('minor')">Слабые</button>
+                <button class="tab-btn" onclick="filterWrinkles('moderate')">Средние</button>
+                <button class="tab-btn" onclick="filterWrinkles('severe')">Сильные</button>
+            </div>
+            <div id="wrinklesList" class="wrinkles-container"></div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="showAllHistory()" class="mode-btn">Показать всю историю</button>
+        </div>
+    </div>
+
+    <!-- Секция для всей истории -->
+    <div id="allHistory">
+        <div class="chart-container">
+            <h3>Динамика изменений</h3>
+            <canvas id="wrinkleChart"></canvas>
+        </div>
+        <div class="timeline">
+            <h3>Хронология анализов</h3>
+            <div id="timeline">Загрузка...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal для просмотра изображений -->
+<div id="imageModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; cursor: pointer;" onclick="closeModal()">
+    <img id="modalImage" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 90%; max-height: 90%; border-radius: 10px;">
+    <span style="position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer;">&times;</span>
+</div>
+
+<script src="/static/js/history.js"></script>
+<script>
+    const burger = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenuBtn');
+    if (burger) burger.onclick = () => mobileMenu.classList.add('active');
+    if (closeMenu) closeMenu.onclick = () => mobileMenu.classList.remove('active');
+</script>
+</body>
+</html>

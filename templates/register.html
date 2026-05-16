@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Регистрация - AI Анализ кожи</title>
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/register.css">
+</head>
+<body>
+
+<div class="main-header">
+    <div class="header-inner">
+        <div class="logo"><a href="/">AI Анализ кожи</a></div>
+        <div class="nav-links">
+            <a href="/">Главная</a>
+            <a href="/camera">С камеры</a>
+            <a href="/login">Вход</a>
+            <a href="/register">Регистрация</a>
+        </div>
+        <button class="burger" id="burgerBtn">
+            <svg viewBox="0 0 30 23" fill="none">
+                <line x1="1.5" y1="1.5" x2="28.5" y2="1.5" stroke="#D66584" stroke-width="3" stroke-linecap="round"/>
+                <line x1="1.5" y1="11.5" x2="28.5" y2="11.5" stroke="#D66584" stroke-width="3" stroke-linecap="round"/>
+                <line x1="1.5" y1="21.5" x2="28.5" y2="21.5" stroke="#D66584" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+        </button>
+    </div>
+</div>
+<div class="mobile-menu" id="mobileMenu">
+    <button class="close-menu" id="closeMenuBtn">&times;</button>
+    <a href="/">Главная</a>
+    <a href="/camera">С камеры</a>
+    <a href="/login">Вход</a>
+    <a href="/register">Регистрация</a>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>AI Анализ кожи</h1>
+        <p class="subtitle">Создайте аккаунт</p>
+    </div>
+
+    <div class="auth-card">
+        <h2>Регистрация</h2>
+        <div id="errorMessage" class="error-message hidden"></div>
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Логин</label>
+                <input type="text" id="login" name="login" required placeholder="Придумайте логин">
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="password" name="password" required placeholder="Минимум 4 символа">
+            </div>
+            <div class="form-group">
+                <label>Подтверждение пароля</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Повторите пароль">
+            </div>
+            <button type="submit" class="register-btn">Зарегистрироваться</button>
+        </form>
+        <div class="auth-links">
+            Уже есть аккаунт? <a href="/login">Войти</a>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/register.js"></script>
+<script>
+    const burger = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenuBtn');
+    if (burger) burger.onclick = () => mobileMenu.classList.add('active');
+    if (closeMenu) closeMenu.onclick = () => mobileMenu.classList.remove('active');
+</script>
+</body>
+</html>
