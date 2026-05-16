@@ -1,0 +1,49 @@
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.user-info h2 { color: white; margin-bottom: 5px; }
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.stat-card {
+    text-align: center;
+    transition: transform 0.2s;
+}
+.stat-card:hover { transform: translateY(-5px); }
+.stat-value { font-size: 36px; font-weight: bold; margin: 10px 0; }
+.action-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+.recent-scans h3 { margin-bottom: 20px; }
+.scan-item {
+    background: rgba(0,0,0,0.2);
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    cursor: pointer;
+}
+.scan-item:hover { background: rgba(0,0,0,0.3); transform: translateX(5px); }
+.scan-date { font-weight: bold; color: white; }
+.scan-percent { color: #D66584; font-weight: bold; }
+@media (max-width: 768px) {
+    .dashboard-header { flex-direction: column; text-align: center; }
+    .action-btn { width: 100%; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .scan-item { flex-direction: column; text-align: center; }
+}
