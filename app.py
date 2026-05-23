@@ -27,7 +27,7 @@ app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 MODEL_PATH = "model/wrinkle_model_best.pt"
 
 print("="*60)
-print("🚀 ЗАПУСК ПРИЛОЖЕНИЯ")
+print("ЗАПУСК ПРИЛОЖЕНИЯ")
 print("="*60)
 
 # Загрузка детектора
@@ -158,7 +158,7 @@ def api_history():
             "wrinkle_percent": round(scan.get("wrinkle_percent", 0), 1),
             "wrinkle_count": scan.get("total_wrinkles", 0),
             "lighting_score": scan.get("lighting_score", 0),
-            "folder": scan.get("folder", ""),  # <-- ДОБАВЬТЕ ЭТУ СТРОКУ
+            "folder": scan.get("folder", ""), 
             "original_url": f"/user_scan/{user}/{scan.get('folder', '')}/original.jpg",
             "result_url": f"/user_scan/{user}/{scan.get('folder', '')}/result.jpg"
         })
@@ -351,21 +351,14 @@ def analyze():
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+
 if __name__ == "__main__":
-    import socket
-
-    port = 5000
-    for p in range(5000, 5010):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            try:
-                s.bind(('0.0.0.0', p))
-                port = p
-                break
-            except OSError:
-                continue
-
-    print(f"\n🚀 Сервер запущен на http://127.0.0.1:{port}")
-    print(f"📱 http://192.168.0.108:{port}")
-    print("="*60)
-
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get("PORT", 5001))
+    
+    if os.environ.get("RENDER") is None:
+        import socket
+        print(f"\n🚀 Локальный сервер запущен на http://127.0.0.1:{port}")
+        print(f"📱 http://192.168.0.108:{port}")
+        print("="*60)
+    
+    app.run(host='0.0.0.0', port=port, debug=False)  
