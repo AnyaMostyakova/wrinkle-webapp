@@ -8,6 +8,9 @@ let capturedImageBlob = null;
 let animationId = null;
 let isModelLoaded = false;
 
+// Новая переменная для хранения области лица
+let currentFaceBBox = null;
+
 const VIDEO_WIDTH = 640;
 const VIDEO_HEIGHT = 480;
 
@@ -115,6 +118,37 @@ function onResults(results) {
         drawNose(landmarks);
         drawLips(landmarks);
 
+        // --- ВЫЧИСЛЕНИЕ ОБЛАСТИ ЛИЦА (BOUNDING BOX) ---
+        const isMobile = window.innerWidth <= 768;
+        const width = isMobile ? canvas.width : VIDEO_WIDTH;
+        const height = isMobile ? canvas.height : VIDEO_HEIGHT;
+
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (let i = 0; i < landmarks.length; i++) {
+            const point = landmarks[i];
+            const x = point.x * width;
+            const y = point.y * height;
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+        }
+        // Добавляем небольшой отступ (10% от размера)
+        const paddingX = (maxX - minX) * 0.1;
+        const paddingY = (maxY - minY) * 0.1;
+        minX = Math.max(0, minX - paddingX);
+        minY = Math.max(0, minY - paddingY);
+        maxX = Math.min(width, maxX + paddingX);
+        maxY = Math.min(height, maxY + paddingY);
+
+        currentFaceBBox = {
+            x: minX,
+            y: minY,
+            width: maxX - minX,
+            height: maxY - minY
+        };
+        // --- КОНЕЦ ВЫЧИСЛЕНИЯ BBOX ---
+
         const positionStatus = checkFacePosition(landmarks);
         const captureBtn = document.getElementById('captureBtn');
 
@@ -131,6 +165,7 @@ function onResults(results) {
             updateStatus('ready', '✅ Нейросеть готова!', 'success');
         }
     } else {
+        currentFaceBBox = null;
         document.getElementById('captureBtn').disabled = true;
         if (isModelLoaded) {
             updateStatus('warning', '⚠️ Лицо не обнаружено', 'warning');
@@ -299,6 +334,7 @@ async function capturePhoto() {
     const captureWidth = isMobile ? canvas.width : VIDEO_WIDTH;
     const captureHeight = isMobile ? canvas.height : VIDEO_HEIGHT;
 
+    // 1. Создаём временный canvas с зеркальным отображением (как было)
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = captureWidth;
     tempCanvas.height = captureHeight;
@@ -310,10 +346,31 @@ async function capturePhoto() {
     tempCtx.drawImage(video, 0, 0, captureWidth, captureHeight);
     tempCtx.restore();
 
+    // 2. Если есть область лица, обрезаем изображение
+    let finalCanvas = tempCanvas;
+    if (currentFaceBBox && currentFaceBBox.width > 0 && currentFaceBBox.height > 0) {
+        // Корректируем координаты из-за зеркального отображения
+        const mirroredX = captureWidth - (currentFaceBBox.x + currentFaceBBox.width);
+        const croppedCanvas = document.createElement('canvas');
+        croppedCanvas.width = currentFaceBBox.width;
+        croppedCanvas.height = currentFaceBBox.height;
+        const croppedCtx = croppedCanvas.getContext('2d');
+        
+        croppedCtx.drawImage(
+            tempCanvas,
+            mirroredX, currentFaceBBox.y, currentFaceBBox.width, currentFaceBBox.height,
+            0, 0, currentFaceBBox.width, currentFaceBBox.height
+        );
+        finalCanvas = croppedCanvas;
+    }
+
+    // 3. Получаем Blob из итогового canvas (обрезка или полное)
     capturedImageBlob = await new Promise(resolve => {
-        tempCanvas.toBlob(resolve, 'image/jpeg', 0.95);
+        finalCanvas.toBlob(resolve, 'image/jpeg', 0.95);
     });
 
+    // 4. Показываем превью (полное зеркальное изображение для удобства)
+    const fullPreviewCanvas = tempCanvas; // полное зеркальное
     const reader = new FileReader();
     reader.onload = (e) => {
         document.getElementById('previewImage').src = e.target.result;
@@ -321,7 +378,11 @@ async function capturePhoto() {
         document.querySelector('.camera-card').style.display = 'none';
         updateStatus('captured', '📸 Снимок сохранен!', 'success');
     };
-    reader.readAsDataURL(capturedImageBlob);
+    fullPreviewCanvas.toBlob(blob => {
+        const fullReader = new FileReader();
+        fullReader.onload = e => reader.onload(e);
+        fullReader.readAsDataURL(blob);
+    }, 'image/jpeg');
 }
 
 async function analyzePhoto() {
